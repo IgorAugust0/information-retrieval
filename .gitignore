@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+*.pyc
+material/videos/
+qtdVogais.py
+raiz.py
+teste.py
