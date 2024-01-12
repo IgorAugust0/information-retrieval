@@ -1,6 +1,6 @@
 # Information Retrieval
 
-This repository contains three Python scripts implementing different models for Information Retrieval: Boolean Model, Vector Space Model, and an Evaluation script. Each script represents a different approach to Information Retrieval and they can be used to understand the basics of this field.
+This repository contains three Python scripts implementing different models for Information Retrieval: Boolean Model, Vector Space Model, and an Evaluation script. Each script represents a different approach to Information Retrieval and they can be used to understand the basics of this field. They were made during the Information Retrieval "Organização e Recuperação da Informação (ORI)" [course](https://github.com/IgorAugust0/ORI) at the Federal University of Uberlândia (UFU).
 
 ## Table of Contents
 
