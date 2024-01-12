@@ -1,4 +1,4 @@
-# Vector Space Model Program
+# Vector Space Model
 
 This Python program implements a Vector Space Model for information retrieval, allowing users to evaluate queries against a collection of documents. The Vector Space Model is a mathematical model used to represent text documents as vectors in a multidimensional space, facilitating similarity calculations.
 
