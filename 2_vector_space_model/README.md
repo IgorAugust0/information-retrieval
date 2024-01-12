@@ -91,8 +91,7 @@ The program generates the following output files:
 - `response.txt`: Contains the ranked documents based on query similarity.
 
 > **Note:** The output files are overwritten each time the program is run. To delete the output files and generate new ones, use the command `./delete.bat` (on Windows) or `./delete.sh` (on Linux) in your terminal.
----
 
 ## License
 
-This program is provided under the [MIT License](LICENSE). Feel free to use, modify, and distribute it.
+This program is provided under the [MIT License](../LICENSE). Feel free to use, modify, and distribute it.

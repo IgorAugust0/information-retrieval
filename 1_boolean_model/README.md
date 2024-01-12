@@ -50,3 +50,7 @@ To use the system, follow these steps:
 ## Conclusion
 
 The Boolean model is a simple but effective way to retrieve relevant documents from a set of documents. This system demonstrates how the model can be implemented using Python and the NLTK library. By following the steps outlined in this README, you can use the system to search for documents and retrieve relevant results. See the [oriendation document](trab1_ori_2023-1-en.pdf) for more information about the system and how it works.
+
+## License
+
+This program is provided under the [MIT License](../LICENSE). Feel free to use, modify, and distribute it.

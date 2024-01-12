@@ -47,6 +47,6 @@ The script generates two types of plots:
 
 The average scores are also written to a file named `average.txt`.
 
-### License
+## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This program is provided under the [MIT License](../LICENSE). Feel free to use, modify, and distribute it.
