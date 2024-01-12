@@ -1,6 +1,7 @@
 #  Autor: Igor Augusto Reis Gomes   [12011BSI290]
 
 from collections import defaultdict
+from importlib import import_module
 import math
 import string
 import sys
@@ -19,7 +20,7 @@ PRINT = False # flag to enable printing in console
 def install_nltk():
     """Function to install the nltk package using pip. If the package is already installed, it will be skipped."""
     try:
-        import nltk
+        import_module("nltk")
         print("\033[1;32;40m✅ nltk is installed!\033[0m")
     except ImportError:
         print("\033[1;31m⚠ nltk not found. Installing it...\033[0m")
@@ -103,7 +104,7 @@ def display_inverted_index(inverted_index: dict[str, list[tuple[int, int]]]):
 def save_inverted_index(inverted_index: dict[str, list[tuple[int, int]]]):
     """Save the inverted index to a file."""
     try:
-        with open("indice.txt", encoding="utf8", mode="w") as file:
+        with open("index.txt", encoding="utf8", mode="w") as file:
             for term, doc_list in inverted_index.items():
                 file.write(f"{term}: ")
                 for doc_id, freq in doc_list:
@@ -216,7 +217,7 @@ def save_weights(document_weights: dict[int, list[tuple[str, float]]], base_file
     """Save the weights of each term in each document to a file."""
     doc_names = read_doc_names(base_filename)
 
-    with open("pesos.txt", "w", encoding="utf-8") as weights_file:
+    with open("weights.txt", "w", encoding="utf-8") as weights_file:
         for doc_id, weights in document_weights.items():
             index = doc_id - 1
             if index < len(doc_names):
@@ -233,7 +234,7 @@ def save_response(ranking: list[tuple[int, float]], base_filename: str):
     filtered_ranking = [(doc_id, similarity) for doc_id, similarity in ranking if similarity >= 0.001]
 
     # Save the response to a file
-    with open("resposta.txt", "w", encoding="utf-8") as response_file:
+    with open("response.txt", "w", encoding="utf-8") as response_file:
         response_file.write(f"{len(filtered_ranking)}\n")
         for doc_id, similarity in filtered_ranking:
             index = doc_id - 1
@@ -297,7 +298,7 @@ def parse_arguments():
     """Parse the command line arguments."""
     if len(sys.argv) != 3:
         print("\033[91m\n❌ ERROR: Invalid arguments!\n")
-        print("\033[93mUsage: python nome_do_programa.py base.txt consulta.txt\n")
+        print("\033[93mUsage: python vsm.py base.txt query.txt\n")
         print("\033[0m")
         sys.exit(1)
     return sys.argv[1], sys.argv[2]

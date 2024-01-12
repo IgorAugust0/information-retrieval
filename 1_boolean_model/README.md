@@ -41,12 +41,12 @@ To use the system, follow these steps:
 
 2. Create a file `base.txt` containing the documents you want to search. Each document should be on a separate line.
 
-3. Run the program by running `python modelo_booleano.py base.txt consulta.txt` in your terminal. Replace `consulta.txt` with the name of the file containing your query.
+3. Run the program by running `python boolean_model.py base.txt query.txt` in your terminal. Replace `query.txt` with the name of the file containing your query.
 
-4. The program will display the results of the query in the terminal and save them to a file `resposta.txt`.
+4. The program will display the results of the query in the terminal and save them to a file `response.txt`.
 
 5. To delete the output files and generate new ones, use the command `./delete.bat` (on Windows) or `./delete.sh` (on Linux) in your terminal.
 
 ## Conclusion
 
-The Boolean model is a simple but effective way to retrieve relevant documents from a set of documents. This system demonstrates how the model can be implemented using Python and the NLTK library. By following the steps outlined in this README, you can use the system to search for documents and retrieve relevant results.
+The Boolean model is a simple but effective way to retrieve relevant documents from a set of documents. This system demonstrates how the model can be implemented using Python and the NLTK library. By following the steps outlined in this README, you can use the system to search for documents and retrieve relevant results. See the [oriendation document](trab1_ori_2023-1-en.pdf) for more information about the system and how it works.

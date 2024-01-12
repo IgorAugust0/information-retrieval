@@ -5,7 +5,7 @@ REM This batch file deletes some files
 set found=0
 
 REM List of files to delete
-set files=resposta.txt response.txt indice.txt index.txt etiquetador.bin tagger.bin
+set files=resposta.txt response.txt indice.txt index.txt etiquetador.bin tagger.bin pesos.txt weights.txt
 
 REM Loop through the list of files and delete each file if it exists
 for %%i in (%files%) do (
@@ -18,6 +18,7 @@ for %%i in (%files%) do (
 if %found%==0 (
     echo No files found to delete.
 )
+
 
 @REM ---- Alternative solutions ----
 @REM -----------------------------------------------------------------------------

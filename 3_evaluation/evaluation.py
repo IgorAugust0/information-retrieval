@@ -62,7 +62,7 @@ def calculate_average(combined_scores, num_queries):
     """Calculates the average scores of all queries and writes them to a file."""
     average_scores = [round(sum(combined_scores[score]) / num_queries) for score in combined_scores]
 
-    with open("media.txt", "w", encoding="utf8") as file:
+    with open("average.txt", "w", encoding="utf8") as file:
         for score in average_scores:
             file.write(str(score / 100) + " ")
     return average_scores
@@ -78,25 +78,25 @@ def plot_results(results, average_scores, num_queries):
     for i, result in enumerate(results):
         ax = axs[i]
         ax.plot(result[0], result[1], color=colors[i % len(colors)], marker=markers[i % len(markers)], linestyle="-")
-        ax.set_title("Consulta " + str(i + 1))
-        ax.set_xlabel("Revocação")
-        ax.set_ylabel("Precisão")
-    fig.suptitle("Resultados")
+        ax.set_title("Query " + str(i + 1))
+        ax.set_xlabel("Recall")
+        ax.set_ylabel("Precision")
+    fig.suptitle("Results")
     plt.tight_layout()
     plt.show()
 
     # Graph with mean (average) of all queries
     plt.figure(figsize=(6, 4))
     plt.plot([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], average_scores, color="b", marker="o", linestyle="-")
-    plt.title("Média das consultas")
-    plt.xlabel("Revocação")
-    plt.ylabel("Precisão")
+    plt.title("Queries Average")
+    plt.xlabel("Recall")
+    plt.ylabel("Precision")
     plt.show()
 
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python avaliacao.py referencia.txt")
+        print("Usage: python evaluation.py reference.txt")
         sys.exit(1)
     filename = sys.argv[1]
     num_queries, ideal_responses, system_responses = read_file(filename)

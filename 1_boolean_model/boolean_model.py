@@ -1,4 +1,6 @@
 #  Autor: Igor Augusto Reis Gomes   [12011BSI290]
+#  Disclaimer: The following code is not logically as optimized as the next model, but it works.
+#  Also, the tagger and classifier were not per say necessary nor demanded by my professor, but I decided to use them anyway.
 
 import pickle
 import sys
@@ -11,57 +13,46 @@ from nltk.stem import RSLPStemmer
 from nltk.tag import UnigramTagger
 from nltk.tokenize import word_tokenize
 from typing import Any, Callable
-
-# from tqdm import trange
-# from prettytable import PrettyTable
-
-# you may need to run the following commands in your terminal to download nltk, tqdm and prettytable*:
-# pip install nltk
-# pip install tqdm
-# pip install prettytable
-
-# *if you don't want to install prettytable, it will automatically show it in a different format
+from importlib import import_module
 
 
-def initialize_nltk() -> None:
-    """
-    Initialize NLTK and download the necessary resources.
-
-    Returns:
-        None
-    """
+def install_package(package_name: str):
+    """Function to install a package using pip. If the package is already installed, it will be skipped."""
     try:
-        nltk.data.find("tokenizers/punkt")
-    except LookupError:
-        nltk.download("punkt")
-
-    try:
-        nltk.data.find("corpora/stopwords")
-    except LookupError:
-        nltk.download("stopwords")
-
-    try:
-        nltk.data.find("corpora/mac_morpho")
-    except LookupError:
-        nltk.download("mac_morpho")
-
-    try:
-        nltk.data.find("stemmers/rslp")
-    except LookupError:
-        nltk.download("rslp")
-
-
-def install_prettytable():
-    """Function to install the prettytable package using pip."""
-    try:
-        import prettytable
-        print("\033[1;32;40m✅ prettytable is installed!\033[0m")
+        import_module(package_name)
+        print(f"\033[1;32;40m✅ {package_name} is installed!\033[0m")
     except ImportError:
-        print("\033[1;31m⚠ prettytable not found. Installing it...\033[0m")
+        print(f"\033[1;31m⚠ {package_name} not found. Installing it...\033[0m")
         try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "prettytable"])
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", package_name]
+            )
+            import_module(package_name)  # Try to import again after installation
+            print(f"\033[1;32;40m✅ {package_name} is now installed!\033[0m")
         except Exception as e:
-            print(f"\033[1;31m⚠ Failed to install prettytable: {e}\033[0m")
+            print(f"\033[1;31m⚠ Failed to install {package_name}: {e}\033[0m")
+            if package_name == "nltk":
+                sys.exit(1)
+
+
+def download_nltk_resources(resources: list[str]):
+    """Download the necessary resources from NLTK."""
+    for resource in resources:
+        try:
+            nltk.data.find(resource)
+        except LookupError:
+            nltk.download(resource.split("/")[1])
+
+
+def initialize_packages():
+    """Initialize packages and download the necessary resources."""
+    packages = ["nltk", "prettytable"]
+    for package in packages:
+        install_package(package)
+
+    if "nltk" in packages:
+        resources = ["tokenizers/punkt", "corpora/stopwords", "stemmers/rslp"]
+        download_nltk_resources(resources)
 
 
 def load_tagger() -> UnigramTagger:
@@ -72,12 +63,12 @@ def load_tagger() -> UnigramTagger:
         UnigramTagger: The NLTK UnigramTagger.
     """
     try:
-        with open("etiquetador.bin", "rb") as file:
+        with open("tagger.bin", "rb") as file:
             tagger: UnigramTagger = pickle.load(file)
     except FileNotFoundError:
         tagged_sentences = nltk.corpus.mac_morpho.tagged_sents()
         tagger = UnigramTagger(tagged_sentences)
-        with open("etiquetador.bin", "wb") as file:
+        with open("tagger.bin", "wb") as file:
             pickle.dump(tagger, file)
     return tagger
 
@@ -208,7 +199,7 @@ def build_inverted_index(
     inverted_index: dict[str, dict[int, int]] = {}
     for idx, text in enumerate(texts):
         word_count: dict[str, int] = preprocess_text(
-            text, tagger, stemmer, show_classifications=True
+            text, tagger, stemmer, show_classifications=False
         )
         doc_id: int = idx + 1
         for word in word_count:
@@ -255,13 +246,6 @@ def display_inverted_index(inverted_index: dict[str, dict[int, int]]) -> None:
             print()
         return
 
-    # without using PrettyTable
-    # for term in inverted_index:
-    #     print(f"{term}: ", end="")
-    #     for doc_id in inverted_index[term]:
-    #         print(f"{doc_id},{inverted_index[term][doc_id]} ", end="")
-    #     print()
-
 
 def save_inverted_index(inverted_index: dict[str, dict[int, int]]) -> None:
     """
@@ -273,7 +257,7 @@ def save_inverted_index(inverted_index: dict[str, dict[int, int]]) -> None:
     Returns:
         None
     """
-    with open("indice.txt", encoding="utf8", mode="w") as file:
+    with open("index.txt", encoding="utf8", mode="w") as file:
         for term in sorted(inverted_index):
             file.write(term + ": ")
             file.write(
@@ -441,7 +425,7 @@ def save_results(
     count: int = sum(1 for doc_id in query_results if query_results[doc_id][-1])
 
     if count > 0:
-        with open("resposta.txt", encoding="utf8", mode="w") as file:
+        with open("response.txt", encoding="utf8", mode="w") as file:
             print(count, file=file)
             for doc_id in query_results:
                 if query_results[doc_id][-1]:
@@ -598,9 +582,7 @@ def main(base_filename: str, query_filename: str) -> None:
     Returns:
         None
     """
-    initialize_nltk()  # Initialize NLTK and download the necessary resources
-    install_prettytable()  # Install the prettytable package using pip
-
+    initialize_packages()  # Initialize packages and download the necessary resources
     # --- Load the documents ---
     print("\033[1;37m📚 Loading documents...\033[0m")
     time.sleep(1)
@@ -670,7 +652,7 @@ if __name__ == "__main__":
         print(
             "\033[91m\n❌ ERROR: Invalid arguments! Please use the following format:\n"
         )
-        print("\033[93mUsage: python nome_do_programa.py base.txt consulta.txt\n")
+        print("\033[93mUsage: python program_name.py base_file query_file\n")
         print(
             "\033[96mAlternatively, you can run the task script by using VSCode's shortcut Ctrl+Shift+B.\n"
         )

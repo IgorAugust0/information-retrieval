@@ -19,6 +19,7 @@ if %found%==0 (
     echo No files found to delete.
 )
 
+
 @REM ---- Alternative solutions ----
 @REM -----------------------------------------------------------------------------
 @REM REM usage: delete.bat
