@@ -31,4 +31,4 @@ To run the scripts, you need to pass the necessary files as command line argumen
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This program is provided under the [MIT License](LICENSE). Feel free to use, modify, and distribute it.
