@@ -1,4 +1,4 @@
-# Boolean Model Information Retrieval System
+# Boolean Model
 
 This is a simple information retrieval system that uses the Boolean model to evaluate queries and retrieve relevant documents. The system is implemented in Python and uses the NLTK library for text processing.
 
