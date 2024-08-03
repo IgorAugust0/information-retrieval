@@ -32,6 +32,8 @@ You can install these dependencies using pip:
 pip install -r requirements.txt
 ```
 
+> you can use the command `pip freeze | %{$_.split('==')[0]} | %{pip install --upgrade $_}` to update all packages on Windows
+
 ## How to Run
 
 To run the scripts, you need to pass the necessary files as command line arguments. Please refer to the individual scripts for more details.
