@@ -6,74 +6,101 @@ This Python program implements a Vector Space Model for information retrieval, a
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Dependencies](#dependencies)
-- [Functionality](#functionality)
-- [How to Run](#how-to-run)
+- [How it Works?](#how-it-works)
 - [Command-line Arguments](#command-line-arguments)
 - [Output](#output)
 - [License](#license)
 
 ## Installation
 
-Before using the program, ensure that the required NLTK package is installed. The program will attempt to install it if not already present. Otherwise, you can install it manually by running the following command in your terminal:
+Before using the program, ensure that the required Natural Language Toolkit [NLTK](https://www.nltk.org/) package for tokenization, stopword removal, and stemming is installed. The program will attempt to install it if not already present. Otherwise, you can install it manually by running the following command in your terminal:
 
 ```bash
 pip install -r requirements.txt
 ```
 
+> This file is located at the root of the repository.
+
 ## Usage
 
 1. **Prepare Data:**
+
    - Create a base file (`base.txt`) containing a list of document filenames, with one filename per line.
-   - Ensure the documents are present and accessible.
+
+     ```bash
+     doc1.txt
+     doc2.txt
+     doc3.txt
+     ```
+
+     > Ensure the listed documents are present and accessible in the same directory as the program.
 
 2. **Create Query File:**
+
    - Create a query file (`query.txt`) containing the query you want to evaluate.
 
 3. **Run the Program:**
+
    - Execute the program with the following command:
 
      ```bash
      python vsm.py base.txt query.txt
      ```
 
-## Dependencies
+## How It Works
 
-The program relies on the following dependencies:
+The program executes the following steps:
 
-- [NLTK](https://www.nltk.org/): Natural Language Toolkit for tokenization, stopword removal, and stemming.
+### 1. Initialization
 
-## Functionality
+- Checks for and installs the **NLTK** package if not already present.
 
-The program performs the following tasks:
+### 2. Document Preprocessing
 
-1. **Initialization:**
-   - Checks for and installs the NLTK package.
+- **Tokenization:** Splits the text into individual terms.
+- **Cleaning:** Removes stopwords and punctuation.
+- **Stemming:** Reduces terms to their root/base form.
 
-2. **Document Preprocessing:**
-   - Tokenizes, removes stopwords and punctuation, and performs stemming on the documents.
+### 3. Inverted Index Creation
 
-3. **Inverted Index Creation:**
-   - Builds an inverted index from the preprocessed documents.
+- **Builds an inverted index** from the preprocessed documents. The index represents the relationship between terms and documents in the format `term:(document, weight)`, where the weight is computed using **TF-IDF** (Term Frequency-Inverse Document Frequency), as follows:
 
-4. **Query Evaluation:**
-   - Utilizes the Vector Space Model to calculate the similarity between the query and each document.
+  $$\text{TF-IDF} = \text{TF} \times \text{IDF}$$
 
-5. **Output:**
-   - Saves weights of each term in each document, the inverted index, and the response to separate files.
+  - **Term Frequency (TF):**
 
-6. **Execution Time Measurement:**
-   - Measures and displays the total execution time.
+    - Measures how frequently a term appears in a document, normalized by the total number of terms in the document.
+    - Calculated as:
+      - $1 + \log(\text{freq})$, if $\text{freq} > 0$
+      - $0$, otherwise
 
-## How to Run
+  - **Inverse Document Frequency (IDF):**
 
-1. Ensure Python is installed on your system.
+    - Measures how important a term is by considering the number of documents containing the term
+    - Helps in distinguishing common terms from rare ones.
+    - Defined by the logarithm of the ratio of the total number of documents to the number of documents containing the term.
+    - Calculated as:
+      - $\log\left(\frac{N}{n}\right)$
 
-2. Install the required dependencies (NLTK) using the provided installation instructions.
+  - **TF-IDF Weight:**
 
-3. Prepare the input files: `base.txt` (document filenames) and `query.txt`.
+    - The product of TF and IDF.
+    - Calculated as:
+      - $\text{TF} \times \text{IDF}$
 
-4. Run the program from the command line as described in the [Usage](#usage) section.
+    Where:
+
+    - $N$ is the total number of documents.
+    - $n$ is the number of documents containing the term.
+
+### 4. Query Evaluation
+
+- **Preprocessing:** Applies the same preprocessing steps to the query, including handling logical operators (e.g., AND).
+- **Similarity Calculation:** Evaluates similarity between the query and each document using the Vector Space Model and TF-IDF weighting. Similarity is computed as the cosine of the angle between document $d_j$ and query $q$, using:
+
+  $$\text{Similarity} = \frac{\mathbf{v}_d \cdot \mathbf{v}_q}{\|\mathbf{v}_d\| \|\mathbf{v}_q\|}$$
+
+- where $\mathbf{v}_d$ and $\mathbf{v}_q$ are the vectors for the document and query, respectively.
 
 ## Command-line Arguments
 
@@ -86,11 +113,31 @@ The program expects two command-line arguments:
 
 The program generates the following output files:
 
-- `weights.txt`: Contains the weights of each term in each document.
-- `index.txt`: Contains the inverted index.
-- `response.txt`: Contains the ranked documents based on query similarity.
+- **Index (`index.txt`):** Contains the inverted index with terms and their corresponding documents and weights:
 
-> **Note:** The output files are overwritten each time the program is run. To delete the output files and generate new ones, use the command `./delete.bat` (on Windows) or `./delete.sh` (on Linux) in your terminal.
+  ```bash
+  am: 3,1 # term am appears in document 3 with weight 1
+  cas: 1,1  2,4  3,3 # term cas appears in documents 1, 2, and 3 with weights 1, 4, and 3, respectively
+  ...
+  ```
+
+- **Weights (`weights.txt`):** Contains documents and the weight of each term in the document:
+
+  ```bash
+  doc1.txt: term1, 0.1845 term2, 0.3010 # Document 1 with weights for terms 1 and 2
+  doc2.txt: term1, 0.1625 term2, 0.6021 # Document 2 with weights for terms 1 and 2
+  ```
+
+- **Response (`response.txt`):** Lists the number of documents with a similarity greater than 0.001, showing the number of returned documents and their similarities, i.e., the ranked documents based on query similarity:
+
+  ```bash
+  3 # Number of documents with similarity > 0.001
+  doc2.txt 0.9983 # Document 2 with similarity 0.9983
+  doc3.txt 0.2031 # Document 3 with similarity 0.2031
+  doc1.txt 0.1061 # Document 1 with similarity 0.1061
+  ```
+
+> **Note:** The output files are overwritten each time the program is runs. To delete the output files and generate new ones, use the command `./delete.bat` (on Windows) or `./delete.sh` (on Linux) in your terminal.
 
 ## License
 
